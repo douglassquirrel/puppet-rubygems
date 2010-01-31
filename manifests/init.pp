@@ -4,7 +4,7 @@ define arbitrary_dpkg( $package, $version, $subdir, $deps) {
   $filename = "${package}_${version}.deb"
 
   exec { 
-    $package: 
+    "wget ${package}": 
        command => "/usr/bin/wget ${source_path}/${filename}",
        creates => "/tmp/${filename}",
        cwd => "/tmp";
@@ -15,7 +15,8 @@ define arbitrary_dpkg( $package, $version, $subdir, $deps) {
         ensure => present,
 				source => "/tmp/${filename}",
 				provider => dpkg,
-				require => $deps;
+				require => Exec["wget ${package}"],
+                require => $deps;
   }
 
 
